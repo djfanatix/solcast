@@ -1,0 +1,94 @@
+<script type="text/javascript">
+
+Homey.setTitle( __('pair.title') );
+
+$(function() {
+	$('#connect').click(function() {
+    $('.solcast-error').hide();
+
+    var inputapi = String($('#api').val());
+    var inputsiteid = String($('#siteid').val());
+
+    if (inputapi != '' && inputsiteid != '') {
+      var device_data = {
+        id : inputsiteid
+      };
+
+      var settings = {
+        api : inputapi,
+        siteid  : inputsiteid
+      };
+
+      Homey.addDevice({
+        name	 : "Solcast",
+        data 	 : device_data,
+        settings : settings
+      }, function(error, result) {
+        if (error) {
+            $('.solcast-error').show();
+            $('.solcast-error-msg').html(error.message || error.toString() );
+        }
+        $('.solcast-error').hide();
+
+        Homey.done();
+      })
+
+    } else {
+        $('.solcast-error').show();
+        $('.solcast-error-msg').html( __('pair.nosettings') );
+    }
+
+	});
+})
+</script>
+
+<style type="text/css">
+  .form-group {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    display: block;
+  }
+  .solcast-status, .solcast-info {
+		display: none;
+	}
+  .solcast-info {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .solcast-info .info-label {
+    min-width: 150px;
+    font-weight: 700;
+  }
+  .buttons, .messages {
+    padding-top: 14px;
+  }
+  .button:disabled {
+    color: #ccc;
+  }
+  .button:enabled {
+    background-color: #00c139 !important;
+    color: #fff;
+  }
+</style>
+
+<p data-i18n="pair.intro">Enter your Solcast API and Resource ID.</p>
+<div class="solcast-pairing">
+  <div class="form-group">
+    <label for="api" data-i18n="pair.api">API Key</label>
+    <input type="text" class="form-control" id="api" placeholder="" required>
+  </div>
+  <div class="form-group">
+  	<label for="siteid" data-i18n="pair.siteid">Resource ID</label>
+  	<input type="text" class="form-control" id="siteid" placeholder="" required>
+  </div>
+  <div class="form-group buttons">
+    <button id="connect" class="button" data-i18n="pair.connect">Connect</button>
+  </div>
+</div>
+
+<div class="messages">
+  <p class="solcast-status solcast-error" style="color: #ff6300;"><i class="fa fa-times"></i> <span class="solcast-error-msg"></span></p>
+</div>

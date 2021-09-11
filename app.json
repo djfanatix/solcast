@@ -1,0 +1,266 @@
+{
+  "id": "com.solcast",
+  "sdk": 2,
+  "brandColor": "#dfaf00",
+  "name": {
+    "en": "Solcast",
+    "nl": "Solcast"
+  },
+  "tags": {
+    "en": [
+      "forecast",
+      "solcast",
+      "solar",
+      "solaredge",
+      "sma",
+      "fronius"
+    ],
+    "nl": [
+      "Solcast",
+      "Voorspelling",
+      "zonnepanelen",
+      "solaredge",
+      "sma",
+      "fronius"
+    ]
+  },
+  "version": "1.0.4",
+  "compatibility": ">=3.0.0",
+  "author": {
+    "name": "Pieter Verougstraete",
+    "email": "pieter.Verougstraete@gmail.com"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "pieterverougstraete",
+        "currency": "EUR"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/djfanatix/com.solcast/issues"
+  },
+  "permissions": [
+    "homey:manager:geolocation"
+  ],
+  "homeyCommunityTopicId": 46842,
+  "images": {
+    "large": "./assets/images/large.png",
+    "small": "./assets/images/small.png"
+  },
+  "category": "energy",
+  "description": {
+    "en": "Forecast Solar production",
+    "nl": "Voorspel zonnepanelen productie"
+  },
+  "dependencies": {
+    "net": "*",
+    "node-fetch": "^2.0.0",
+    "uuid": "^3.4.0"
+  },
+  "capabilities": {
+    "nexthour1": {
+      "type": "number",
+      "title": {
+        "en": "Forecast next hour",
+        "nl": "Voorspelling volgend uur"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sun.svg",
+      "insights": true,
+      "decimals": 2,
+      "units": {
+        "en": "KWh",
+        "nl": "KWh"
+      }
+    },
+    "nexthour2": {
+      "type": "number",
+      "title": {
+        "en": "Forecast next 2 hours",
+        "nl": "Voorspelling volgende 2 uur"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sun.svg",
+      "insights": true,
+      "decimals": 2,
+      "units": {
+        "en": "KWh",
+        "nl": "KWh"
+      }
+    },
+    "nexthour3": {
+      "type": "number",
+      "title": {
+        "en": "Forecast next 3 hours",
+        "nl": "Voorspelling volgende 3 uur"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sun.svg",
+      "insights": true,
+      "decimals": 2,
+      "units": {
+        "en": "KWh",
+        "nl": "KWh"
+      }
+    },
+    "today": {
+      "type": "number",
+      "title": {
+        "en": "Forecast today",
+        "nl": "Voorspelling vandaag"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/total_yield.svg",
+      "insights": true,
+      "decimals": 2,
+      "units": {
+        "en": "KWh",
+        "nl": "KWh"
+      }
+    },
+    "tomorrow": {
+      "type": "number",
+      "title": {
+        "en": "Forecast tomorrow",
+        "nl": "Voorspelling morgen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/total_yield.svg",
+      "insights": true,
+      "decimals": 2,
+      "units": {
+        "en": "KWh",
+        "nl": "KWh"
+      }
+    }
+  },
+  "flow": {
+    "actions": [
+      {
+        "id": "upload",
+        "title": {
+          "en": "Upload PV production"
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "pvoutput",
+            "min": 0,
+            "max": 100
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "id": "changedCurrentPower",
+        "title": {
+          "en": "Forecast Changed (W)",
+          "nl": "Voorspelling gewijzigd (W)"
+        },
+        "titleFormatted": {
+          "en": "Forecast Changed (W)",
+          "nl": "Voorspelling gewijzigd (W)"
+        },
+        "tokens": [
+          {
+            "name": "consumption",
+            "type": "number",
+            "title": {
+              "en": "Consumption",
+              "nl": "Verbruik"
+            },
+            "example": 200
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Solcast",
+              "nl": "Selecteer Solcast"
+            },
+            "filter": "driver_id=solcast"
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "id": "solcast",
+      "name": {
+        "en": "Solcast",
+        "nl": "Solcast"
+      },
+      "images": {
+        "large": "drivers/solcast/assets/images/large.jpg",
+        "small": "drivers/solcast/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_power.now",
+        "nexthour1",
+        "nexthour2",
+        "nexthour3",
+        "today",
+        "tomorrow",
+        "measure_temperature"
+      ],
+      "capabilitiesOptions": {
+        "measure_power.now": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast now",
+            "nl": "Huidige Voorspelling"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "start"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Solcast settings",
+            "nl": "Solcast instellingen"
+          },
+          "children": [
+            {
+              "id": "api",
+              "type": "text",
+              "value": "",
+              "label": {
+                "en": "API Key"
+              }
+            },
+            {
+              "id": "siteid",
+              "type": "text",
+              "value": "",
+              "label": {
+                "en": "Resource ID"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

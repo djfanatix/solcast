@@ -1,0 +1,13 @@
+{
+  "pair": {
+    "title": "Solcast toevoegen",
+    "nosettings": "Vul a.u.b. alle verplichte velden in.",
+    "address": "IP adres",
+    "port": "Poort",
+    "polling": "Polling frequentie",
+    "deviceid": "Device ID",
+    "connect": "Verbind"
+  },
+  "Unreachable": "Onbereikbaar",
+  "Off": "Uit"
+}
