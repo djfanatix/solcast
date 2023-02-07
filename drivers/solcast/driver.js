@@ -7,7 +7,7 @@ class SolCastDriver extends Homey.Driver {
 
 	onInit() {
         this.log('SolCast driver has been initialized');
-
+	//	this.homey.flow.getDeviceTriggerCard('trigger_now_flow');
 	}
 
   onPair (socket) {

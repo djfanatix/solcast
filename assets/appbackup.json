@@ -1,6 +1,6 @@
 {
   "id": "com.solcast",
-  "sdk": 3,
+  "sdk": 2,
   "brandColor": "#dfaf00",
   "name": {
     "en": "Solcast",
@@ -24,8 +24,8 @@
       "fronius"
     ]
   },
-  "version": "2.0.2",
-  "compatibility": ">=5.0.0",
+  "version": "1.0.4",
+  "compatibility": ">=3.0.0",
   "author": {
     "name": "Pieter Verougstraete",
     "email": "pieter.Verougstraete@gmail.com"
@@ -128,23 +128,6 @@
         "nl": "kWh"
       }
     },
-    "todayremaining": {
-      "type": "number",
-      "title": {
-        "en": "Remaining today",
-        "nl": "Resterend vandaag"
-      },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/total_yield.svg",
-      "insights": true,
-      "decimals": 2,
-      "units": {
-        "en": "kWh",
-        "nl": "kWh"
-      }
-    },
     "tomorrow": {
       "type": "number",
       "title": {
@@ -163,105 +146,59 @@
       }
     }
   },
-	"flow": {
-		"actions": [{
-			"id": "upload",
-			"title": {
-				"en": "Upload PV production"
-			},
-			"titleFormatted": {
-				"en": "Upload PV production [[pvoutput]]"
-			},
-			"args": [{
-				"type": "number",
-				"name": "pvoutput",
-				"min": 0,
-				"max": 100
-			}]
-		}],
-		"triggers": [
-		{
-		  "id": "trigger_now",
-			"title": {
-				"en": "Forecast now is changed"
-			},
-			"titleFormatted": {
-				"en": "Forecast now is updated"
-			},
-      "args": [{
-        "type": "device",
-        "name": "device",
-        "filter": "driver_id=solcast"
-        }],
-      "tokens": [{
-        "type": "number",
-        "name": "forecastnow",
-        "title": "Forecast Now",
-        "example": 1000
-        }]
-    },
+  "flow": {
+    "actions": [
       {
-      "id": "trigger_today",
-      "title": {
-      "en": "Today forecast is changed"
+        "id": "upload",
+        "title": {
+          "en": "Upload PV production"
         },
-        "args": [{
-          "type": "device",
-          "name": "device",
-          "filter": "driver_id=solcast"
-          }],
-      "titleFormatted": {
-         "en": "Daily forecast is updated"
-        },
-      "tokens": [{
-        "type": "number",
-        "name": "dailyforecast",
-        "title": "Forecast today",
-        "example": 10
-        }]
-      },
-      {
-"id": "trigger_tomorrow",
-"title": {
-  "en": "Tomorrow forecast is changed"
-},
-"titleFormatted": {
-  "en": "Daily forecast tommorrow is updated"
-},
-"args": [{
-  "type": "device",
-  "name": "device",
-  "filter": "driver_id=solcast"
-  }],
-"tokens": [{
-  "type": "number",
-  "name": "dailyforecasttomorrow",
-  "title": "Forecast tomorrow",
-  "example": 10
-  }]
-      },
-      {
-"id": "trigger_today_remaining",
-"title": {
-  "en": "Today remaining forecast is changed"
-},
-"titleFormatted": {
-  "en": "Today remaining is changed"
-},
-"tokens": [{
-  "type": "number",
-  "name": "forecastremaining",
-  "title": "Forecast remainings",
-  "example": 10
-  }],
-  "args": [{
-    "type": "device",
-    "name": "device",
-    "filter": "driver_id=solcast"
-    }]
+        "args": [
+          {
+            "type": "number",
+            "name": "pvoutput",
+            "min": 0,
+            "max": 100
+          }
+        ]
       }
-		]
-	},
+    ],
+    "triggers": [
+      {
+        "id": "changedCurrentPower",
+        "title": {
+          "en": "Forecast Changed (W)",
+          "nl": "Voorspelling gewijzigd (W)"
+        },
+        "titleFormatted": {
+          "en": "Forecast Changed (W)",
+          "nl": "Voorspelling gewijzigd (W)"
+        },
+        "tokens": [
+          {
+            "name": "consumption",
+            "type": "number",
+            "title": {
+              "en": "Consumption",
+              "nl": "Verbruik"
+            },
+            "example": 200
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Solcast",
+              "nl": "Selecteer Solcast"
+            },
+            "filter": "driver_id=solcast"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "solcast",
@@ -280,21 +217,10 @@
         "nexthour2",
         "nexthour3",
         "today",
-        "todayremaining",
-        "tomorrow",
-        "button.reset"
+        "tomorrow"
       ],
       "capabilitiesOptions": {
-        "button.reset": { 
-               "maintenanceAction": true,
-               "title": { 
-                  "en": "Reset jobs"
-               },
-               "desc": { 
-                  "en": "Reset the recurring jobs"
-               }
-            },
-         "measure_power.now": {
+        "measure_power.now": {
           "icon": "/assets/sun.svg",
           "title": {
             "en": "Forecast now",

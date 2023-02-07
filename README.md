@@ -2,15 +2,13 @@ Solcast - Solar Forecasts
 
 Homey app using the Solcast API to get solar forecasts customized for your location and installation*
 
-Links
-The app is awaiting Athom’s approval
 
 Purpose
 
 The app will download every half hour the latest solar forecast with the current forecasted value, and the next 1, 2 and 3 hours.
 Every night at Midnight, it will download the accumulated forecasts for Today and Tomorrow.
 
-(in development): Every 5 minutes the app will upload your current solar production to fine-tune the prediction model of your solcast forecast.
+Every 5 minutes the app will upload your current solar production to fine-tune the prediction model of your solcast forecast.
 
 Usage
 
@@ -39,19 +37,16 @@ For support please use the official support topic on the forum.
 Donations
 
 If you appreciate the app: Buy me a Beer]
-@athom a Homey Pro is always appreciated :slight_smile:
+@athom a Homey Pro (2023) is always appreciated :slight_smile:
 
-Development
 
 The upload functionality will not be fully built into the app, as everybody uses different apps to monitor their PV system, it will be a combination of logic and flows.
 
-To Do
-
-Upload functionality
-Different #API calls
-Setup flows
-Changelog
 
 v1.0.0
-
 Initial release
+
+v2.0.0
+SDK3
+Flow triggers
+Today remaining added

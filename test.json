@@ -1,3 +1,62 @@
+"id": "triggerToday",
+"title": {
+  "en": "Today forecast is changed"
+},
+"titleFormatted": {
+  "en": "Daily forecast is updated [[dailyforecast]]"
+},
+"args": [{
+  "type": "number",
+  "name": "dailyforecast",
+  "min": 0,
+  "max": 1000
+}],
+"id": "triggerTommorrow",
+"title": {
+  "en": "Tommorrow forecast is changed"
+},
+"titleFormatted": {
+  "en": "Daily forecast tommorrow is updated [[dailyforecasttommorrow]]"
+},
+"args": [{
+  "type": "number",
+  "name": "dailyforecasttommorrow",
+  "min": 0,
+  "max": 1000
+}],
+"id": "triggerTodayremaining",
+"title": {
+  "en": "Today remaining forecast is changed"
+},
+"titleFormatted": {
+  "en": "Today remaining is changed [[forecastremaining]]"
+},
+"args": [{
+  "type": "number",
+  "name": "forecastremaining",
+  "min": 0,
+  "max": 1000
+}]
+
+
+
+ //	this.homey.flow.getDeviceTriggerCard('trigger_now_flow').trigger(this,{}, {});
+        //	Homey.ManagerFlow.getCard('trigger', 'changedExportPower').trigger(this, { export: powergrid_export }, {});
+				//this.homey.flow.getDeviceTriggerCard('triggerNow').trigger(this,{ 'tokennow' : currentPower }, {});
+
+           /*
+   triggerNow.registerRunListener(async (args, state) => {
+        let result = (await this.getCapabilityValue('measure_power.now'));
+        this.log('triggerednow');
+        return Promise.resolve(result);
+    })  
+    */
+    //this.homey.flow.getDeviceTriggerCard('triggerNow').trigger(this,{ 'tokennow' : currentPower }, {});
+            //Next hour
+
+
+
+
 {
   "id": "com.solcast",
   "sdk": 3,
@@ -24,7 +83,7 @@
       "fronius"
     ]
   },
-  "version": "2.0.2",
+  "version": "2.0.0",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Pieter Verougstraete",
@@ -181,87 +240,23 @@
 		}],
 		"triggers": [
 		{
-		  "id": "trigger_now",
+		  "id": "trigger_now_flow",
 			"title": {
 				"en": "Forecast now is changed"
 			},
 			"titleFormatted": {
 				"en": "Forecast now is updated"
 			},
-      "args": [{
-        "type": "device",
-        "name": "device",
-        "filter": "driver_id=solcast"
-        }],
-      "tokens": [{
-        "type": "number",
-        "name": "forecastnow",
-        "title": "Forecast Now",
-        "example": 1000
-        }]
-    },
-      {
-      "id": "trigger_today",
-      "title": {
-      "en": "Today forecast is changed"
-        },
-        "args": [{
-          "type": "device",
-          "name": "device",
-          "filter": "driver_id=solcast"
-          }],
-      "titleFormatted": {
-         "en": "Daily forecast is updated"
-        },
-      "tokens": [{
-        "type": "number",
-        "name": "dailyforecast",
-        "title": "Forecast today",
-        "example": 10
-        }]
-      },
-      {
-"id": "trigger_tomorrow",
-"title": {
-  "en": "Tomorrow forecast is changed"
-},
-"titleFormatted": {
-  "en": "Daily forecast tommorrow is updated"
-},
-"args": [{
-  "type": "device",
-  "name": "device",
-  "filter": "driver_id=solcast"
-  }],
-"tokens": [{
-  "type": "number",
-  "name": "dailyforecasttomorrow",
-  "title": "Forecast tomorrow",
-  "example": 10
-  }]
-      },
-      {
-"id": "trigger_today_remaining",
-"title": {
-  "en": "Today remaining forecast is changed"
-},
-"titleFormatted": {
-  "en": "Today remaining is changed"
-},
-"tokens": [{
-  "type": "number",
-  "name": "forecastremaining",
-  "title": "Forecast remainings",
-  "example": 10
-  }],
-  "args": [{
-    "type": "device",
-    "name": "device",
-    "filter": "driver_id=solcast"
-    }]
-      }
-		]
+			"args": [
+  			    {
+    		   "type": "device",
+    		   "name": "device",
+     		   "filter": "driver_id=solcast"
+     			 }
+   				 ]
+		}]
 	},
+
   "drivers": [
     {
       "id": "solcast",
