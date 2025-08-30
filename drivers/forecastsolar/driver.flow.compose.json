@@ -1,0 +1,13 @@
+
+{
+  "actions": [
+    {
+      "id": "polling",
+      "title": { "en": "Polling" }
+    },
+    {
+      "id": "midnight",
+      "title": { "en": "Midnight" }
+    }
+  ]
+}

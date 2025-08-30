@@ -3,8 +3,8 @@
   "sdk": 3,
   "brandColor": "#dfaf00",
   "name": {
-    "en": "Solcast",
-    "nl": "Solcast"
+    "en": "Solar Forecast",
+    "nl": "Solar Forecast"
   },
   "tags": {
     "en": [
@@ -24,7 +24,7 @@
       "fronius"
     ]
   },
-  "version": "2.0.2",
+  "version": "4.3.1",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Pieter Verougstraete",
@@ -55,9 +55,7 @@
     "nl": "Voorspel zonnepanelen productie"
   },
   "dependencies": {
-    "net": "*",
-    "node-fetch": "^2.0.0",
-    "uuid": "^3.4.0"
+    "node-fetch": "^2.0.0"
   },
   "capabilities": {
     "nexthour1": {
@@ -145,6 +143,18 @@
         "nl": "kWh"
       }
     },
+    "apicalls": {
+      "type": "number",
+      "title": {
+        "en": "API Calls"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/api.svg",
+      "insights": true,
+      "decimals": 0
+    },
     "tomorrow": {
       "type": "number",
       "title": {
@@ -163,106 +173,533 @@
       }
     }
   },
-	"flow": {
-		"actions": [{
-			"id": "upload",
-			"title": {
-				"en": "Upload PV production"
-			},
-			"titleFormatted": {
-				"en": "Upload PV production [[pvoutput]]"
-			},
-			"args": [{
-				"type": "number",
-				"name": "pvoutput",
-				"min": 0,
-				"max": 100
-			}]
-		}],
-		"triggers": [
-		{
-		  "id": "trigger_now",
-			"title": {
-				"en": "Forecast now is changed"
-			},
-			"titleFormatted": {
-				"en": "Forecast now is updated"
-			},
-      "args": [{
-        "type": "device",
-        "name": "device",
-        "filter": "driver_id=solcast"
-        }],
-      "tokens": [{
-        "type": "number",
-        "name": "forecastnow",
-        "title": "Forecast Now",
-        "example": 1000
-        }]
-    },
+  "flow": {
+    "conditions": [
       {
-      "id": "trigger_today",
-      "title": {
-      "en": "Today forecast is changed"
+        "id": "solcast_forecast_between_times",
+        "title": {
+          "en": "Forecast between times"
         },
-        "args": [{
-          "type": "device",
-          "name": "device",
-          "filter": "driver_id=solcast"
-          }],
-      "titleFormatted": {
-         "en": "Daily forecast is updated"
+        "titleFormatted": {
+          "en": "Forecast between [[startTime]] and [[endTime]] is above [[threshold]]"
         },
-      "tokens": [{
-        "type": "number",
-        "name": "dailyforecast",
-        "title": "Forecast today",
-        "example": 10
-        }]
+        "hint": {
+          "en": "Checks if the forecasted PV production between start and end time exceeds the threshold"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          },
+          {
+            "type": "time",
+            "name": "startTime",
+            "title": {
+              "en": "Start Time (HH:mm)"
+            },
+            "placeholder": {
+              "en": "12:00"
+            }
+          },
+          {
+            "type": "time",
+            "name": "endTime",
+            "title": {
+              "en": "End Time (HH:mm)"
+            },
+            "placeholder": {
+              "en": "17:00"
+            }
+          },
+          {
+            "type": "number",
+            "name": "threshold",
+            "title": {
+              "en": "Threshold (kWh)"
+            },
+            "min": 0,
+            "step": 0.1
+          }
+        ]
       },
       {
-"id": "trigger_tomorrow",
-"title": {
-  "en": "Tomorrow forecast is changed"
-},
-"titleFormatted": {
-  "en": "Daily forecast tommorrow is updated"
-},
-"args": [{
-  "type": "device",
-  "name": "device",
-  "filter": "driver_id=solcast"
-  }],
-"tokens": [{
-  "type": "number",
-  "name": "dailyforecasttomorrow",
-  "title": "Forecast tomorrow",
-  "example": 10
-  }]
-      },
-      {
-"id": "trigger_today_remaining",
-"title": {
-  "en": "Today remaining forecast is changed"
-},
-"titleFormatted": {
-  "en": "Today remaining is changed"
-},
-"tokens": [{
-  "type": "number",
-  "name": "forecastremaining",
-  "title": "Forecast remainings",
-  "example": 10
-  }],
-  "args": [{
-    "type": "device",
-    "name": "device",
-    "filter": "driver_id=solcast"
-    }]
+        "id": "forecastsolar_forecast_between_times",
+        "title": {
+          "en": "Forecast between times"
+        },
+        "titleFormatted": {
+          "en": "Forecast between [[startTime]] and [[endTime]] is above [[threshold]]"
+        },
+        "hint": {
+          "en": "Checks if the forecasted PV production between start and end time exceeds the threshold"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=forecastsolar"
+          },
+          {
+            "type": "time",
+            "name": "startTime",
+            "title": {
+              "en": "Start Time (HH:mm)"
+            },
+            "placeholder": {
+              "en": "12:00"
+            }
+          },
+          {
+            "type": "time",
+            "name": "endTime",
+            "title": {
+              "en": "End Time (HH:mm)"
+            },
+            "placeholder": {
+              "en": "17:00"
+            }
+          },
+          {
+            "type": "number",
+            "name": "threshold",
+            "title": {
+              "en": "Threshold (kWh)"
+            },
+            "min": 0,
+            "step": 0.1
+          }
+        ]
       }
-		]
-	},
+    ],
+    "actions": [
+      {
+        "id": "polling",
+        "title": {
+          "en": "Fetch Solcast update"
+        },
+        "titleFormatted": {
+          "en": "Fetch Solcast update"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      },
+      {
+        "id": "midnight",
+        "title": {
+          "en": "Fetch Midnight update"
+        },
+        "titleFormatted": {
+          "en": "Fetch Midnight update"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "id": "trigger_now_forecast",
+        "title": {
+          "en": "Forecast now is changed"
+        },
+        "titleFormatted": {
+          "en": "Forecast now is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "forecastnow",
+            "title": "Forecast Now",
+            "example": 1000
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=forecastsolar"
+          }
+        ]
+      },
+      {
+        "id": "trigger_today_forecast",
+        "title": {
+          "en": "Today forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Daily forecast is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "dailyforecast",
+            "title": "Forecast today",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=forecastsolar"
+          }
+        ]
+      },
+      {
+        "id": "trigger_tomorrow_forecast",
+        "title": {
+          "en": "Tomorrow forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Daily forecast tomorrow is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "dailyforecasttomorrow",
+            "title": "Forecast tomorrow",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=forecastsolar"
+          }
+        ]
+      },
+      {
+        "id": "trigger_today_remaining_forecast",
+        "title": {
+          "en": "Today remaining forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Today remaining is changed"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "forecastremaining",
+            "title": "Forecast remainings",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=forecastsolar"
+          }
+        ]
+      },
+      {
+        "id": "trigger_now",
+        "title": {
+          "en": "Forecast now is changed"
+        },
+        "titleFormatted": {
+          "en": "Forecast now is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "forecastnow",
+            "title": "Forecast Now",
+            "example": 1000
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      },
+      {
+        "id": "trigger_today",
+        "title": {
+          "en": "Today forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Daily forecast is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "dailyforecast",
+            "title": "Forecast today",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      },
+      {
+        "id": "trigger_apiratelimited",
+        "title": {
+          "en": "SOLCAST Daily api rated exceeded"
+        },
+        "titleFormatted": {
+          "en": "SOLCAST Daily api rated exceeded"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "apirate",
+            "title": "api calls today",
+            "example": 1
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      },
+      {
+        "id": "trigger_tomorrow",
+        "title": {
+          "en": "Tomorrow forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Daily forecast tomorrow is updated"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "dailyforecasttomorrow",
+            "title": "Forecast tomorrow",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      },
+      {
+        "id": "trigger_today_remaining",
+        "title": {
+          "en": "Today remaining forecast is changed"
+        },
+        "titleFormatted": {
+          "en": "Today remaining is changed"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "forecastremaining",
+            "title": "Forecast remainings",
+            "example": 10
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=solcast"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
+    {
+      "id": "forecastsolar",
+      "name": {
+        "en": "Forecast.Solar",
+        "nl": "Forecast.Solar"
+      },
+      "images": {
+        "large": "drivers/forecastsolar/assets/images/large.jpg",
+        "small": "drivers/forecastsolar/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_power.now",
+        "meter_power.nexthour1",
+        "meter_power.nexthour2",
+        "meter_power.nexthour3",
+        "meter_power.today",
+        "meter_power.todayremaining",
+        "meter_power.tomorrow",
+        "alarm_generic",
+        "button"
+      ],
+      "capabilitiesOptions": {
+        "button": {
+          "title": {
+            "en": "API Call"
+          },
+          "type": "boolean",
+          "insights": true,
+          "getable": true,
+          "setable": true,
+          "uiComponent": "toggle",
+          "$flow": {
+            "triggers": [
+              {
+                "id": "press",
+                "title": {
+                  "en": "Forecastsolar API called onoff"
+                }
+              }
+            ]
+          }
+        },
+        "alarm_generic": {
+          "icon": "/assets/api.svg",
+          "title": {
+            "en": "API Error"
+          },
+          "insightsTitleTrue": {
+            "en": "Forecast.Solar API calling..."
+          },
+          "insightsTitleFalse": {
+            "en": "Forecast.Solar API called OK"
+          },
+          "getable": true,
+          "insights": true,
+          "setable": false,
+          "uiComponent": "sensor",
+          "$flow": {
+            "triggers": [
+              {
+                "id": "alarm_generic_true",
+                "title": {
+                  "en": "Forecast.Solar API calling 11"
+                }
+              },
+              {
+                "id": "alarm_generic_false",
+                "title": {
+                  "en": "Forecast.Solar API call OK 11"
+                }
+              }
+            ]
+          }
+        },
+        "measure_power.now": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast now",
+            "nl": "Huidige Voorspelling"
+          }
+        },
+        "meter_power.nexthour1": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next hour",
+            "nl": "Voorspelling volgend uur"
+          }
+        },
+        "meter_power.nexthour2": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next 2 hours",
+            "nl": "Voorspelling volgende 2 uur"
+          }
+        },
+        "meter_power.nexthour3": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next 3 hours",
+            "nl": "Voorspelling volgende 3 uur"
+          }
+        },
+        "meter_power.todayremaining": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Remaining today",
+            "nl": "Resterend vandaag"
+          }
+        },
+        "meter_power.tomorrow": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast tomorrow",
+            "nl": "Voorspelling morgen"
+          }
+        },
+        "meter_power.today": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast today",
+            "nl": "Voorspelling vandaag"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "start"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Forecastsolar settings",
+            "nl": "Forecastsolar instellingen"
+          },
+          "children": [
+            {
+              "id": "kwp",
+              "type": "text",
+              "value": "",
+              "label": {
+                "en": "kWp Solar Panels (use . for decimals)"
+              }
+            },
+            {
+              "id": "declination",
+              "type": "text",
+              "value": "",
+              "label": {
+                "en": "Tilt of Solar panels "
+              }
+            },
+            {
+              "id": "orientation",
+              "type": "text",
+              "value": "",
+              "label": {
+                "en": "Orientation of Solar panels"
+              }
+            },
+            {
+              "id": "damping",
+              "type": "number",
+              "value": 1,
+              "label": {
+                "en": "This value makes a correction of the values. (default = 1), must be decimal (for example 0.95)"
+              }
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "solcast",
       "name": {
@@ -276,29 +713,142 @@
       "class": "sensor",
       "capabilities": [
         "measure_power.now",
-        "nexthour1",
-        "nexthour2",
-        "nexthour3",
-        "today",
-        "todayremaining",
-        "tomorrow",
-        "button.reset"
+        "meter_power.nexthour1",
+        "meter_power.nexthour2",
+        "meter_power.nexthour3",
+        "meter_power.today",
+        "meter_power.todayremaining",
+        "meter_power.tomorrow",
+        "apicalls",
+        "alarm_generic",
+        "button"
       ],
       "capabilitiesOptions": {
-        "button.reset": { 
-               "maintenanceAction": true,
-               "title": { 
-                  "en": "Reset jobs"
-               },
-               "desc": { 
-                  "en": "Reset the recurring jobs"
-               }
-            },
-         "measure_power.now": {
+        "button": {
+          "title": {
+            "en": "API Call"
+          },
+          "type": "boolean",
+          "insights": true,
+          "insightsTitleTrue": {
+            "en": "Solcast API called 1"
+          },
+          "insightsTitlefalse": {
+            "en": "Solcast API called 2"
+          },
+          "insightsTitle": {
+            "en": "Solcast API called 5"
+          },
+          "titleFalse": {
+            "en": "Solcast API called 3"
+          },
+          "titleTrue": {
+            "en": "Solcast API called 4"
+          },
+          "getable": true,
+          "setable": true,
+          "uiComponent": "toggle",
+          "$flow": {
+            "triggers": [
+              {
+                "id": "press",
+                "title": {
+                  "en": "Solcast API called onoff"
+                }
+              }
+            ]
+          }
+        },
+        "alarm_generic": {
+          "icon": "/assets/api.svg",
+          "title": {
+            "en": "API Error"
+          },
+          "insightsTitleTrue": {
+            "en": "Solcast API calling..."
+          },
+          "insightsTitleFalse": {
+            "en": "Solcast API called OK"
+          },
+          "getable": true,
+          "insights": true,
+          "setable": false,
+          "uiComponent": "sensor",
+          "$flow": {
+            "triggers": [
+              {
+                "id": "alarm_generic_true",
+                "title": {
+                  "en": "Solcast API calling 11"
+                }
+              },
+              {
+                "id": "alarm_generic_false",
+                "title": {
+                  "en": "Solcast API call OK 11"
+                }
+              }
+            ]
+          }
+        },
+        "measure_power.now": {
           "icon": "/assets/sun.svg",
           "title": {
             "en": "Forecast now",
             "nl": "Huidige Voorspelling"
+          }
+        },
+        "meter_power.nexthour1": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next hour",
+            "nl": "Voorspelling volgend uur"
+          }
+        },
+        "meter_power.nexthour2": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next 2 hours",
+            "nl": "Voorspelling volgende 2 uur"
+          }
+        },
+        "meter_power.nexthour3": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast next 3 hours",
+            "nl": "Voorspelling volgende 3 uur"
+          }
+        },
+        "meter_power.todayremaining": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Remaining today",
+            "nl": "Resterend vandaag"
+          }
+        },
+        "meter_power.tomorrow": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast tomorrow",
+            "nl": "Voorspelling morgen"
+          }
+        },
+        "meter_power.today": {
+          "icon": "/assets/sun.svg",
+          "title": {
+            "en": "Forecast today",
+            "nl": "Voorspelling vandaag"
+          }
+        },
+        "apicalls": {
+          "icon": "/assets/api.svg",
+          "insights": true,
+          "insightsTitleTrue": {
+            "en": "Solcast API called api calls"
+          },
+          "title": {
+            "en": "API Calls",
+            "nl": "API Calls"
           }
         }
       },
@@ -329,14 +879,6 @@
               "value": "",
               "label": {
                 "en": "Resource ID"
-              }
-            },
-            {
-              "id": "apicalls",
-              "type": "number",
-              "value": 0,
-              "label": {
-                "en": "API calls today"
               }
             }
           ]

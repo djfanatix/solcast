@@ -5,41 +5,27 @@ const { ManagerDrivers } = require('homey');
 
 class SolCastDriver extends Homey.Driver {
 
-	onInit() {
+async onInit() {
         this.log('SolCast driver has been initialized');
-	//	this.homey.flow.getDeviceTriggerCard('trigger_now_flow');
-	}
+		
+const card = this.homey.flow.getActionCard('polling');
+card.registerRunListener(async(args) => {
+this.log('Start manual polling with Flow')
+	await args.device.polling();
+		});    
 
+const midnight = this.homey.flow.getActionCard('midnight');
+midnight.registerRunListener(async(args) => {
+this.log('Fetch Midnight values')
+	await args.device.midnightfetch();
+		});    
+	}
   onPair (socket) {
     let devices = [];
 }
 }
 
+
 module.exports = SolCastDriver;
 
-// Action for Flow
-/*
-"actions": [
-{
- "id": "upload",
- "title": {
-	 "en": "Upload PV production"
- },
- "placeholder": {
-	"en": "Drop PV tag here"
-},
- "args": [
-{
-"type": "number",
-"name": "PVoutput",
-"min": 0,
-"max": 1,
-"step": 0.01,
-"label": "kWh",
-"labelMultiplier": 0,
-"labelDecimals": 2
-}
-]
-}
-],
-*/
+

@@ -1,0 +1,101 @@
+<script type="text/javascript">
+
+Homey.setTitle( __('pair.title') );
+
+$(function() {
+	$('#connect').click(function() {
+    $('.forecastsolar-error').hide();
+
+    var inputkwp = String($('#kwp').val());
+    var inputorientation = String($('#orientation').val());
+    var inputdeclination = String($('#declination').val());
+
+
+    if (inputkwp != '') {
+      var device_data = {
+        id : inputorientation + inputkwp
+      };
+
+      var settings = {
+        kwp : inputkwp,
+        orientation  : inputorientation,
+        declination  : inputdeclination
+      };
+
+      Homey.addDevice({
+        name	 : "Forecast.Solar",
+        data 	 : device_data,
+        settings : settings
+      }, function(error, result) {
+        if (error) {
+            $('.forecastsolar-error').show();
+            $('.forecastsolar-error-msg').html(error.message || error.toString() );
+        }
+        $('.forecastsolar-error').hide();
+
+        Homey.done();
+      })
+
+    } else {
+        $('.forecastsolar-error').show();
+        $('.forecastsolar-error-msg').html( __('pair.nosettings') );
+    }
+
+	});
+})
+</script>
+
+<style type="text/css">
+  .form-group {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    display: block;
+  }
+  .forecastsolar-status, .forecastsolar-info {
+		display: none;
+	}
+  .forecastsolar-info {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .forecastsolar-info .info-label {
+    min-width: 150px;
+    font-weight: 700;
+  }
+  .buttons, .messages {
+    padding-top: 14px;
+  }
+  .button:disabled {
+    color: #ccc;
+  }
+  .button:enabled {
+    background-color: #00c139 !important;
+    color: #fff;
+  }
+</style>
+
+<p data-i18n="pair.intro">Enter your Solar Panels data</p>
+<div class="forecastsolar-pairing">
+  <div class="form-group">
+    <label for="kwp" data-i18n="pair.api">kWp of Solar Panels (use . for decimals) </label>
+    <input type="number" class="form-control" id="kwp" placeholder="" required>
+  </div>
+  <div class="form-group">
+  	<label for="orientation" data-i18n="pair.siteid">Orientation of Solar Panels (180 = South) </label>
+  	<input type="number" class="form-control" id="orientation" placeholder="" required>
+  </div>
+  <div class="form-group">
+  	<label for="declination" data-i18n="pair.siteid">Tilt / Angle of Solar Panels</label>
+  	<input type="number" class="form-control" id="declination" placeholder="" required>
+  </div>
+  <div class="form-group buttons">
+    <button id="connect" class="button" data-i18n="pair.connect">Connect</button>
+  </div>
+</div>
+
+<div class="messages">
+  <p class="forecastsolar-status forecastsolar-error" style="color: #ff6300;"><i class="fa fa-times"></i> <span class="forecastsolar-error-msg"></span></p>
+</div>
